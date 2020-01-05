@@ -21,6 +21,6 @@ before_script:
 
 script:
     - cd $TRAVIS_BUILD_DIR/pitzDaily_3d_01/
-    - ./Allrun
+    - travis_wait 30 ./Allrun
     - ls
     - tail -n 100 log.simpleFoam
