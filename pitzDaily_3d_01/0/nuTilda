@@ -41,7 +41,7 @@ boundaryField
         type            zeroGradient;
     }
 
-    frontAndBack
+    "(front|back)"
     {
         type            symmetry;
     }

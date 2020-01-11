@@ -1,4 +1,7 @@
-factor 4;
+factor 36;
 lenZ #calc "6 * $factor";
 posZ #calc "0.0002 * $factor";
-numZ #calc "8 * $factor";
+numZ 1; // #calc "8 * $factor";
+layerThick #calc "6.0/8.0";
+numExtrude #calc "8 * $factor - 1";
+

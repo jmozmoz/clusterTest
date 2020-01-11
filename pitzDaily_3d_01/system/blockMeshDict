@@ -32,17 +32,17 @@ vertices
     (290 0 0)
     (290 16.6 0)
 
-    (-20.6 0 $lenZ)
-    (-20.6 25.4 $lenZ)
-    (0 -25.4 $lenZ)
-    (0 0 $lenZ)
-    (0 25.4 $lenZ)
-    (206 -25.4 $lenZ)
-    (206 0 $lenZ)
-    (206 25.4 $lenZ)
-    (290 -16.6 $lenZ)
-    (290 0 $lenZ)
-    (290 16.6 $lenZ)
+    (-20.6 0 $layerThick)
+    (-20.6 25.4 $layerThick)
+    (0 -25.4 $layerThick)
+    (0 0 $layerThick)
+    (0 25.4 $layerThick)
+    (206 -25.4 $layerThick)
+    (206 0 $layerThick)
+    (206 25.4 $layerThick)
+    (290 -16.6 $layerThick)
+    (290 0 $layerThick)
+    (290 16.6 $layerThick)
 );
 
 negY
@@ -132,7 +132,7 @@ boundary
             (5 8 19 16)
         );
     }
-    frontAndBack
+    front
     {
         type symmetry;
         faces
@@ -142,6 +142,13 @@ boundary
             (3 6 7 4)
             (5 8 9 6)
             (6 9 10 7)
+	);
+    }
+    back
+    {
+        type symmetry;
+	faces
+	(
             (11 14 15 12)
             (13 16 17 14)
             (14 17 18 15)

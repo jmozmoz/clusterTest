@@ -40,7 +40,7 @@ boundaryField
         type            omegaWallFunction;
         value           $internalField;
     }
-    frontAndBack
+    "(front|back)"
     {
         type            symmetry;
     }

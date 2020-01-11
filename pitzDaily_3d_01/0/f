@@ -39,7 +39,7 @@ boundaryField
         type            fWallFunction;
         value           uniform 0;
     }
-    frontAndBack
+    "(front|back)"
     {
         type            symmetry;
     }

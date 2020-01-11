@@ -40,7 +40,7 @@ boundaryField
         type            epsilonWallFunction;
         value           uniform 14.855;
     }
-    frontAndBack
+    "(front|back)"
     {
         type            symmetry;
     }

@@ -40,7 +40,7 @@ boundaryField
         type            v2WallFunction;
         value           $internalField;
     }
-    frontAndBack
+    "(front|back)"
     {
         type            symmetry;
     }
