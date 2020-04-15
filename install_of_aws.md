@@ -14,7 +14,7 @@ During the installation, it is assumed that the instance type **c5n.18xlarge** i
 
 
 ## EFA network devices
-To achieve high performance of HPC applications like CFD, the communication between different "nodes" of a cluster should be as fast as possible, i.e. high throughput and low latency. Normally, special network hardware is used for this, e. g. [InfiniBand](https://en.wikipedia.org/wiki/InfiniBand). On AWS a special kind of ethernet connection is available for certain kinds of instances which improves the network performance between the instances. It is called 
+To achieve high performance of HPC applications like CFD, the communication between different "nodes" of a cluster should be as fast as possible, i.e. high throughput and low latency. Normally, special network hardware is used for this, e. g. [InfiniBand](https://en.wikipedia.org/wiki/InfiniBand). On AWS a special kind of ethernet connection is available for certain kinds of instances which improves the network performance between the instances. It is called
 ["Elastic Fabric Adapter" (EFA)](https://aws.amazon.com/hpc/efa/).
 
 To use EFA different the following settings have to be chosen and preparations have to be made.
@@ -26,19 +26,19 @@ By default, instances on AWS cannot communicate with each other or with the inte
 
 In the EC2 console select `NETWORK & SECURITY -> Security Groups -> Create Security Group`. Choose a Security group name and description and press `Create`. Do not add/modify any rules in the creation step. Then select the newly created group, then `Inbound->Edit`. In the `Type` drop-down menu, select `SSH`, for `Source` either `Anywhere` or `My IP`. If your IP addresses will change in the future then you will also have to edit the security group accordingly in the future. Select `Save`. No changes are necessary for the `Outbound` rule (allow traffic to all IP addresses).
 
-For the cluster nodes to be able to communicate with each other, an additional Security Group is necessary. Create an additional group as described above (name it e. g. **cluster**). Again, do not add/modify any rules in the creation step. Select this new group., then `Inbound->Edit`. For `Type` select `All traffic`. In the Source drop-down menu, select `Custom`. Then select the box for `CIDR, IP or Security Group`. In this box start typing the name of this security groups, e. g. **cluster**. A drop-down menu will appear showing all groups matching the input. Select the name of this security group. The internal name (something like **sg-0123456789abcef**) will appear. Then select `Outbound->Edit`. There, input the same rule as for `Inbound`. **It is necessary to change the existing rule (All traffic to all destinations), because it will not work!** (see also [this forum message](https://forums.aws.amazon.com/message.jspa?messageID=923526#923526)). 
+For the cluster nodes to be able to communicate with each other, an additional Security Group is necessary. Create an additional group as described above (name it e. g. **cluster**). Again, do not add/modify any rules in the creation step. Select this new group., then `Inbound->Edit`. For `Type` select `All traffic`. In the Source drop-down menu, select `Custom`. Then select the box for `CIDR, IP or Security Group`. In this box start typing the name of this security groups, e. g. **cluster**. A drop-down menu will appear showing all groups matching the input. Select the name of this security group. The internal name (something like **sg-0123456789abcef**) will appear. Then select `Outbound->Edit`. There, input the same rule as for `Inbound`. **It is necessary to change the existing rule (All traffic to all destinations), because it will not work!** (see also [this forum message](https://forums.aws.amazon.com/message.jspa?messageID=923526#923526)).
 
-## Create AMI containing all necessary software 
+## Create AMI containing all necessary software
 
 In this step a Amazon Machine Image (AMI) will be created which contains the OpenFOAM installation and other software necessary to run the virtual cluster. It is assumed that you have already created [a SSH key pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) and use it.
 
 In the EC2 console start a new instance. Then on the seven tabs apply the following settings:
 1. Select `Ubuntu Server 18.04 LTS (HVM), SSD Volume Type` as AMI.
 2. To be able to immediately test the Elastic Fabric Adapter (EFA) network devices, choose `c5n.18xlarge` as instance type (or one of the others mention in https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa-start.html#efa-start-tempinstance).
-3. Unfortunately, it is currently not possible to choose a `spot instance` and use EFA, if starting form the EC2 console (see [this forum thread](https://forums.aws.amazon.com/message.jspa?messageID=929034#929034)). Choose one of the possible selections under `Subnet` (do not use `No preferences`). Under `Placement Group->Add to a new placement group` and give it a name, e. g. **cluster**. In future starts of instances, always use `Add to existing placement group` and select the name of the group just created. Enable `Elastic Fabric Adapter`. To turn off hyperthreading which actually slows down OpenFOAM, select `CPU options` and set `Threads per core` to 1. 
-4. Add storage: Use the shown default settings. 
+3. Unfortunately, it is currently not possible to choose a `spot instance` and use EFA, if starting form the EC2 console (see [this forum thread](https://forums.aws.amazon.com/message.jspa?messageID=929034#929034)). Choose one of the possible selections under `Subnet` (do not use `No preferences`). Under `Placement Group->Add to a new placement group` and give it a name, e. g. **cluster**. In future starts of instances, always use `Add to existing placement group` and select the name of the group just created. Enable `Elastic Fabric Adapter`. To turn off hyperthreading which actually slows down OpenFOAM, select `CPU options` and set `Threads per core` to 1.
+4. Add storage: Use the shown default settings.
 5. Add tags: No input is needed.
-6. Under “Assign a security group” choose `Select an existing security group`, then select both security groups, which have been created above, e. g. **cluster-head** and **cluster**
+6. Under `Assign a security group` choose `Select an existing security group`, then select both security groups, which have been created above, e. g. **cluster-head** and **cluster**
 7. Review your settings and start the instance.
 
 Connect to the newly created instance with the command shown in the console, e. g.
@@ -55,15 +55,15 @@ Then install OpenFOAM (see also [here](https://openfoam.org/download/7-ubuntu/))
     sudo apt-get -y install openfoam7
 
 For OpenFOAM to work with the AMAZON OpenMPI installation, the MPI wrapper of OpenFOAM has to be recompiled:
-  
-    sudo su – root
+
+    sudo su - root
     source /opt/openfoam7/etc/bashrc
     cd /opt/openfoam7/src/Pstream
     ./Allwclean
     ./Allwmake -j
     exit
 
-(The linker command should include the path to the AMAZON mpi library: 
+(The linker command should include the path to the AMAZON mpi library:
 `-L/opt/amazon/openmpi/lib`)
 
 Modify `$HOME/.bashrc`, so MPI processes set up the environment correctly for the special OpenMPI version and OpenFOAM. This has to be added at the **top** of `.bashrc.`
@@ -96,7 +96,7 @@ There are at least two ways to enable passwordless SSH connections between the i
 
 To test the setup for a cluster start at least two instances using the newly created AMI. The first instance is the cluster head with the two security groups **cluster-head** and **cluster**. The other are slaves and only need the security group **cluster**. They can be started as described above.
 
-### Log into the cluster 
+### Log into the cluster
 
 You probably would want to create an additional `Elastic Block Storage` (EBS) volumes to store the OpenFOAM cases. For simplicity, this step is left out here and the case is stored on the volume used for the AMI created above.
 
@@ -111,12 +111,11 @@ Then use ssh to connect to the cluster head (add the option -A to the command sh
 
     ssh -A ubuntu@ec2-AAA-BBB-CCC-DDD.us-east-2.compute.amazonaws.com
 
-After logging into the cluster head create a file named `allIPs` in the `$HOME` directory containing all private IP addresses of the cluster nodes, one per line. These IP addresses can be found in the EC2 console on the instances page. It might be necessary to configure it to show the corresponding column. 
+After logging into the cluster head create a file named `allIPs` in the `$HOME` directory containing all private IP addresses of the cluster nodes, one per line. These IP addresses can be found in the EC2 console on the instances page. It might be necessary to configure it to show the corresponding column.
 
 Then start the script:
 
-    $HOME/setupCluster.sh
-    ubuntu@ip-172-31-15-63:~$ ./setupCluster.sh
+    ubuntu@ip-172-31-15-63:~$ $HOME/setupCluster.sh
     start nfs server
       % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                      Dload  Upload   Total   Spent    Left  Speed
@@ -150,7 +149,7 @@ The run the case:
      Running blockMesh on /home/ubuntu/OpenFOAM/ubuntu-7/run/clusterTest/pitzDaily_3d_72
      Running extrudeMesh on /home/ubuntu/OpenFOAM/ubuntu-7/run/clusterTest/pitzDaily_3d_72
      Running decomposePar on /home/ubuntu/OpenFOAM/ubuntu-7/run/clusterTest/pitzDaily_3d_72
-     
+
      ./Allrun
     tail -n 15 log.simpleFoam
 
