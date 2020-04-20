@@ -52,11 +52,12 @@ Then install OpenFOAM (see also [here](https://openfoam.org/download/7-ubuntu/))
     sudo sh -c "wget -O - http://dl.openfoam.org/gpg.key | apt-key add -"
     sudo add-apt-repository http://dl.openfoam.org/ubuntu
     sudo apt-get update
+    sudo apt-get upgrade -y
     sudo apt-get -y install openfoam7
 
 For OpenFOAM to work with the AMAZON OpenMPI installation, the MPI wrapper of OpenFOAM has to be recompiled:
 
-    sudo su - root
+    sudo su -
     source /opt/openfoam7/etc/bashrc
     cd /opt/openfoam7/src/Pstream
     ./Allwclean
@@ -68,7 +69,7 @@ For OpenFOAM to work with the AMAZON OpenMPI installation, the MPI wrapper of Op
 
 Modify `$HOME/.bashrc`, so MPI processes set up the environment correctly for the special OpenMPI version and OpenFOAM. This has to be added at the **top** of `.bashrc.`
 
-    export=/opt/amazon/openmpi/bin:$PATH
+    export PATH=/opt/amazon/openmpi/bin:$PATH
     source /opt/openfoam7/etc/bashrc
 
 For the exchange of data in the virtual cluster, install network file system (NFS). Then, e. g. the OpenFOAM case data are stored only on the cluster and used by all clients.
